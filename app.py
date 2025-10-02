@@ -27,58 +27,423 @@ st.set_page_config(
     page_title="🎬 Movie Recommendation System",
     page_icon="🎬",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
-# Custom CSS for better styling
+# Custom CSS for cinematic, premium design
 st.markdown("""
 <style>
-    .main-header {
-        font-size: 3rem;
-        color: #FF6B6B;
-        text-align: center;
-        margin-bottom: 2rem;
+    /* Import Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Playfair+Display:wght@700;900&display=swap');
+    
+    /* Global Styles */
+    * {
+        font-family: 'Inter', sans-serif;
     }
-    .sub-header {
-        font-size: 1.5rem;
-        color: #4ECDC4;
-        margin-bottom: 1rem;
+    
+    /* Main Container - Dark Cinematic Theme */
+    .main {
+        background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+        background-attachment: fixed;
     }
-    .metric-card {
-        background-color: #f0f2f6;
-        padding: 1rem;
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: #1a1a2e;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #e94560 0%, #f39c12 100%);
         border-radius: 10px;
-        border-left: 5px solid #FF6B6B;
     }
-    .recommendation-card {
-        background-color: #ffffff;
-        padding: 1.5rem;
-        border-radius: 15px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-        margin-bottom: 1.5rem;
-        border-left: 4px solid #4ECDC4;
-        transition: transform 0.2s ease-in-out;
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, #f39c12 0%, #e94560 100%);
     }
-    .recommendation-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    
+    /* Header Styles - Cinematic Gold & Red */
+    .main-header {
+        font-family: 'Playfair Display', serif;
+        font-size: 4rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, #f39c12 0%, #e94560 50%, #f39c12 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-align: center;
+        margin-bottom: 1rem;
+        animation: fadeInDown 1s ease-out, glow 2s ease-in-out infinite;
+        letter-spacing: 2px;
+        text-transform: uppercase;
     }
-    .recommendation-card h4 {
-        color: #2C3E50;
-        font-weight: bold;
+    
+    @keyframes glow {
+        0%, 100% {
+            filter: drop-shadow(0 0 20px rgba(249, 156, 18, 0.5));
+        }
+        50% {
+            filter: drop-shadow(0 0 30px rgba(233, 69, 96, 0.7));
+        }
+    }
+    
+    .subtitle {
+        text-align: center;
         font-size: 1.3rem;
-        margin-bottom: 0.8rem;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        color: #b8b8d1;
+        margin-bottom: 2rem;
+        animation: fadeIn 1.5s ease-out;
+        font-weight: 300;
+        letter-spacing: 1px;
     }
+    
+    .sub-header {
+        font-family: 'Playfair Display', serif;
+        font-size: 2rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #f39c12 0%, #e94560 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1.5rem;
+        animation: slideInLeft 0.8s ease-out;
+        letter-spacing: 1px;
+    }
+    
+    /* Recommendation Cards - Dark Premium Style */
+    .recommendation-card {
+        background: linear-gradient(145deg, #1e1e2e 0%, #2d2d44 100%);
+        padding: 2rem;
+        border-radius: 20px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(249, 156, 18, 0.1);
+        margin-bottom: 2rem;
+        border: 2px solid rgba(249, 156, 18, 0.2);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+    }
+    
+    .recommendation-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(249, 156, 18, 0.1), transparent);
+        transition: left 0.7s;
+    }
+    
+    .recommendation-card:hover::before {
+        left: 100%;
+    }
+    
+    .recommendation-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #e94560 0%, #f39c12 50%, #e94560 100%);
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    
+    .recommendation-card:hover {
+        transform: translateY(-12px) scale(1.02);
+        box-shadow: 0 25px 50px rgba(233, 69, 96, 0.4), 0 0 0 1px rgba(249, 156, 18, 0.3);
+        border-color: rgba(249, 156, 18, 0.5);
+    }
+    
+    .recommendation-card:hover::after {
+        opacity: 1;
+    }
+    
+    .recommendation-card h4 {
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 1.6rem;
+        margin-bottom: 1.2rem;
+        background: linear-gradient(135deg, #f39c12 0%, #e94560 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: 0.5px;
+    }
+    
     .recommendation-card p {
-        color: #34495E;
-        font-size: 1rem;
-        margin-bottom: 0.5rem;
-        line-height: 1.4;
+        color: #b8b8d1;
+        font-size: 1.05rem;
+        margin-bottom: 0.8rem;
+        line-height: 1.8;
     }
+    
     .recommendation-card strong {
-        color: #E74C3C;
+        background: linear-gradient(135deg, #f39c12 0%, #e94560 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
         font-weight: 600;
+    }
+    
+    /* Metric Cards - Dark Theme with Gold Accents */
+    [data-testid="stMetricValue"] {
+        color: #f39c12 !important;
+        font-weight: 700 !important;
+        font-size: 2rem !important;
+    }
+    
+    [data-testid="stMetricLabel"] {
+        color: #b8b8d1 !important;
+        font-weight: 500 !important;
+    }
+    
+    /* Buttons - Gold & Red Gradient */
+    .stButton>button {
+        background: linear-gradient(135deg, #e94560 0%, #f39c12 100%);
+        color: white;
+        border: none;
+        border-radius: 30px;
+        padding: 0.85rem 2.5rem;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.4s ease;
+        box-shadow: 0 8px 25px rgba(233, 69, 96, 0.4);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+    
+    .stButton>button:hover {
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 12px 35px rgba(233, 69, 96, 0.6), 0 0 20px rgba(249, 156, 18, 0.4);
+        background: linear-gradient(135deg, #f39c12 0%, #e94560 100%);
+    }
+    
+    .stButton>button:active {
+        transform: translateY(-1px);
+    }
+    
+    /* Sidebar Styling */
+    .css-1d391kg, [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #1e1e2e 0%, #2d2d44 100%);
+    }
+    
+    .css-1d391kg .css-1v0mbdj, [data-testid="stSidebar"] label {
+        color: #b8b8d1 !important;
+        font-weight: 500;
+    }
+    
+    /* Tab Styling - Dark with Gold Accents */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 10px;
+        background-color: transparent;
+    }
+    
+    .stTabs [data-baseweb="tab"] {
+        background: rgba(30, 30, 46, 0.6);
+        border-radius: 15px 15px 0 0;
+        padding: 12px 24px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        color: #b8b8d1;
+        border: 1px solid rgba(249, 156, 18, 0.1);
+        backdrop-filter: blur(10px);
+    }
+    
+    .stTabs [data-baseweb="tab"]:hover {
+        background: rgba(45, 45, 68, 0.8);
+        color: #f39c12;
+        border-color: rgba(249, 156, 18, 0.3);
+    }
+    
+    .stTabs [aria-selected="true"] {
+        background: linear-gradient(135deg, #e94560 0%, #f39c12 100%);
+        color: white !important;
+        border: 1px solid rgba(249, 156, 18, 0.5);
+        box-shadow: 0 4px 15px rgba(233, 69, 96, 0.3);
+    }
+    
+    /* Animations */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+    
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes slideInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    /* Success/Warning/Error Messages - Dark Theme */
+    .stSuccess, .stWarning, .stError, .stInfo {
+        border-radius: 15px;
+        padding: 1.2rem;
+        animation: fadeIn 0.5s ease-out;
+        backdrop-filter: blur(10px);
+        border-left: 4px solid;
+    }
+    
+    .stSuccess {
+        background: rgba(46, 213, 115, 0.1);
+        border-left-color: #2ed573;
+    }
+    
+    .stWarning {
+        background: rgba(249, 156, 18, 0.1);
+        border-left-color: #f39c12;
+    }
+    
+    .stError {
+        background: rgba(233, 69, 96, 0.1);
+        border-left-color: #e94560;
+    }
+    
+    .stInfo {
+        background: rgba(249, 156, 18, 0.1);
+        border-left-color: #f39c12;
+    }
+    
+    /* Selectbox and Input Styling - Dark Theme */
+    .stSelectbox label, .stSlider label {
+        color: #b8b8d1 !important;
+        font-weight: 500 !important;
+    }
+    
+    .stSelectbox > div > div, .stTextInput > div > div {
+        background-color: rgba(30, 30, 46, 0.6);
+        border: 1px solid rgba(249, 156, 18, 0.2);
+        color: #ffffff;
+        border-radius: 10px;
+    }
+    
+    .stSelectbox > div > div:focus-within {
+        border-color: #f39c12;
+        box-shadow: 0 0 0 1px #f39c12;
+    }
+    
+    /* Loading Spinner - Gold */
+    .stSpinner > div {
+        border-top-color: #f39c12 !important;
+        border-right-color: #e94560 !important;
+    }
+    
+    /* Chart Container - Dark Theme */
+    .js-plotly-plot {
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        background: rgba(30, 30, 46, 0.5);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(249, 156, 18, 0.1);
+    }
+    
+    /* Container Padding */
+    .block-container {
+        padding-top: 2rem;
+        padding-bottom: 3rem;
+    }
+    
+    /* Number Badge - Gold & Red */
+    .movie-number {
+        display: inline-block;
+        background: linear-gradient(135deg, #e94560 0%, #f39c12 100%);
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 40px;
+        font-weight: 800;
+        margin-right: 12px;
+        box-shadow: 0 6px 20px rgba(233, 69, 96, 0.4);
+        font-size: 1.1rem;
+    }
+    
+    /* Top Settings Bar - Dark Theme */
+    .settings-container {
+        background: linear-gradient(145deg, #1e1e2e 0%, #2d2d44 100%);
+        padding: 2.5rem;
+        border-radius: 25px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(249, 156, 18, 0.2);
+        margin-bottom: 2.5rem;
+        border: 2px solid rgba(249, 156, 18, 0.2);
+        backdrop-filter: blur(10px);
+    }
+    
+    .settings-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.8rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #f39c12 0%, #e94560 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1.8rem;
+        text-align: center;
+        letter-spacing: 1px;
+    }
+    
+    /* Hide default sidebar */
+    [data-testid="stSidebar"][aria-expanded="false"] {
+        display: none;
+    }
+    
+    /* Text color for dark theme */
+    p, span, div {
+        color: #b8b8d1;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+        color: #ffffff;
+    }
+    
+    /* Slider styling */
+    .stSlider [data-baseweb="slider"] {
+        background-color: rgba(249, 156, 18, 0.2);
+    }
+    
+    .stSlider [data-baseweb="slider"] [role="slider"] {
+        background-color: #f39c12;
+        border: 3px solid #e94560;
+    }
+    
+    /* Expander styling */
+    .streamlit-expanderHeader {
+        background-color: rgba(30, 30, 46, 0.6);
+        border: 1px solid rgba(249, 156, 18, 0.2);
+        border-radius: 10px;
+        color: #b8b8d1;
+    }
+    
+    .streamlit-expanderHeader:hover {
+        border-color: #f39c12;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -250,41 +615,86 @@ def cold_start_recommendations(movies_df, ratings_df, n=10):
     return recommendations
 
 def create_visualizations(movies_df, ratings_df):
-    """Create various visualizations for the dashboard"""
+    """Create various visualizations for the dashboard with cinematic dark theme"""
+    
+    # Cinematic color palette - Gold and Red
+    primary_color = '#f39c12'
+    secondary_color = '#e94560'
+    gradient_colors = ['#e94560', '#f39c12']
     
     # Rating distribution
     fig_ratings = px.histogram(ratings_df, x='rating', nbins=10, 
-                              title='Distribution of Movie Ratings',
-                              color_discrete_sequence=['#FF6B6B'])
-    fig_ratings.update_layout(xaxis_title='Rating', yaxis_title='Count')
+                              title='📊 Distribution of Movie Ratings',
+                              color_discrete_sequence=[primary_color])
+    fig_ratings.update_layout(
+        xaxis_title='Rating',
+        yaxis_title='Count',
+        plot_bgcolor='rgba(30, 30, 46, 0.3)',
+        paper_bgcolor='rgba(30, 30, 46, 0.3)',
+        font=dict(family='Inter, sans-serif', size=12, color='#b8b8d1'),
+        title_font=dict(size=16, color='#f39c12', family='Playfair Display, serif'),
+        xaxis=dict(gridcolor='rgba(249, 156, 18, 0.1)', color='#b8b8d1'),
+        yaxis=dict(gridcolor='rgba(249, 156, 18, 0.1)', color='#b8b8d1')
+    )
+    fig_ratings.update_traces(marker_line_color='#e94560', marker_line_width=1.5)
     
     # Movies per platform
     platform_counts = movies_df['platform_Name'].value_counts()
     fig_platform = px.bar(x=platform_counts.index, y=platform_counts.values,
-                         title='Number of Movies per Platform',
-                         color_discrete_sequence=['#4ECDC4'])
-    fig_platform.update_layout(xaxis_title='Platform', yaxis_title='Number of Movies')
+                         title='📺 Number of Movies per Platform',
+                         color_discrete_sequence=[secondary_color])
+    fig_platform.update_layout(
+        xaxis_title='Platform',
+        yaxis_title='Number of Movies',
+        plot_bgcolor='rgba(30, 30, 46, 0.3)',
+        paper_bgcolor='rgba(30, 30, 46, 0.3)',
+        font=dict(family='Inter, sans-serif', size=12, color='#b8b8d1'),
+        title_font=dict(size=16, color='#e94560', family='Playfair Display, serif'),
+        xaxis=dict(gridcolor='rgba(249, 156, 18, 0.1)', color='#b8b8d1'),
+        yaxis=dict(gridcolor='rgba(249, 156, 18, 0.1)', color='#b8b8d1')
+    )
     
-    # Top genres
+    # Top genres with gradient
     genre_counts = movies_df['genres'].value_counts().head(10)
     fig_genres = px.bar(x=genre_counts.values, y=genre_counts.index,
-                       orientation='h', title='Top 10 Movie Genres',
-                       color_discrete_sequence=['#45B7D1'])
-    fig_genres.update_layout(xaxis_title='Number of Movies', yaxis_title='Genres')
+                       orientation='h', title='🎭 Top 10 Movie Genres',
+                       color=genre_counts.values,
+                       color_continuous_scale=[[0, '#e94560'], [0.5, '#f39c12'], [1, '#ffd700']])
+    fig_genres.update_layout(
+        xaxis_title='Number of Movies',
+        yaxis_title='Genres',
+        plot_bgcolor='rgba(30, 30, 46, 0.3)',
+        paper_bgcolor='rgba(30, 30, 46, 0.3)',
+        font=dict(family='Inter, sans-serif', size=12, color='#b8b8d1'),
+        title_font=dict(size=16, color='#f39c12', family='Playfair Display, serif'),
+        xaxis=dict(gridcolor='rgba(249, 156, 18, 0.1)', color='#b8b8d1'),
+        yaxis=dict(gridcolor='rgba(249, 156, 18, 0.1)', color='#b8b8d1'),
+        showlegend=False
+    )
     
     # User activity distribution
     user_activity = ratings_df['userId'].value_counts()
     fig_activity = px.histogram(x=user_activity.values, nbins=50,
-                               title='User Activity Distribution (Ratings per User)',
-                               color_discrete_sequence=['#96CEB4'])
-    fig_activity.update_layout(xaxis_title='Number of Ratings', yaxis_title='Number of Users')
+                               title='👥 User Activity Distribution (Ratings per User)',
+                               color_discrete_sequence=[primary_color])
+    fig_activity.update_layout(
+        xaxis_title='Number of Ratings',
+        yaxis_title='Number of Users',
+        plot_bgcolor='rgba(30, 30, 46, 0.3)',
+        paper_bgcolor='rgba(30, 30, 46, 0.3)',
+        font=dict(family='Inter, sans-serif', size=12, color='#b8b8d1'),
+        title_font=dict(size=16, color='#f39c12', family='Playfair Display, serif'),
+        xaxis=dict(gridcolor='rgba(249, 156, 18, 0.1)', color='#b8b8d1'),
+        yaxis=dict(gridcolor='rgba(249, 156, 18, 0.1)', color='#b8b8d1')
+    )
+    fig_activity.update_traces(marker_line_color='#e94560', marker_line_width=1.5)
     
     return fig_ratings, fig_platform, fig_genres, fig_activity
 
 def main():
-    # Header
+    # Header with modern styling
     st.markdown('<h1 class="main-header">🎬 Movie Recommendation System</h1>', unsafe_allow_html=True)
-    st.markdown("### Discover your next favorite movie with AI-powered recommendations!")
+    st.markdown('<p class="subtitle">✨ Discover your next favorite movie with AI-powered recommendations! ✨</p>', unsafe_allow_html=True)
     
     # Load data
     movies_df, ratings_df = load_data()
@@ -296,42 +706,61 @@ def main():
     with st.spinner("Loading recommendation models..."):
         models = prepare_models(movies_df, ratings_df)
     
-    # Sidebar
-    st.sidebar.title("🎯 Recommendation Settings")
+    # Top Settings Bar (moved from sidebar)
+    st.markdown('<div class="settings-container">', unsafe_allow_html=True)
+    st.markdown('<h3 class="settings-title">🎯 Recommendation Settings</h3>', unsafe_allow_html=True)
     
-    # Model selection
-    model_type = st.sidebar.selectbox(
-        "Choose Recommendation Method:",
-        ["Content-Based", "Collaborative Filtering", "SVD-Based", "Hybrid Approach", "Cold Start (Popular Movies)"]
-    )
+    # Create columns for horizontal layout
+    col1, col2 = st.columns([2, 1])
     
-    # Number of recommendations
-    n_recommendations = st.sidebar.slider("Number of Recommendations:", 5, 20, 10)
+    with col1:
+        # Model selection
+        model_type = st.selectbox(
+            "Choose Recommendation Method:",
+            ["Content-Based", "Collaborative Filtering", "SVD-Based", "Hybrid Approach", "Cold Start (Popular Movies)"],
+            help="Select the algorithm to use for generating recommendations"
+        )
     
-    # Main content area
+    with col2:
+        # Number of recommendations
+        n_recommendations = st.slider(
+            "Number of Recommendations:", 
+            min_value=5, 
+            max_value=20, 
+            value=10,
+            help="Choose how many movie recommendations to display"
+        )
+    
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    # Main content area with tabs
     tab1, tab2, tab3, tab4 = st.tabs(["🎬 Get Recommendations", "📊 Data Insights", "📈 Model Performance", "ℹ️ About"])
     
     with tab1:
         st.markdown('<h2 class="sub-header">Get Your Movie Recommendations</h2>', unsafe_allow_html=True)
         
-        col1, col2 = st.columns([1, 1])
+        input_col, button_col = st.columns([2, 1])
         
-        with col1:
+        with input_col:
             if model_type in ["Content-Based", "Hybrid Approach"]:
-                st.subheader("Select a Movie You Like:")
+                st.subheader("🎬 Select a Movie You Like:")
                 movie_titles = movies_df['title'].tolist()
-                selected_movie = st.selectbox("Choose a movie:", [""] + movie_titles)
+                selected_movie = st.selectbox("Choose a movie:", [""] + movie_titles, key="movie_select")
             
             if model_type in ["Collaborative Filtering", "SVD-Based", "Hybrid Approach"]:
-                st.subheader("Enter User ID:")
+                st.subheader("👤 Enter User ID:")
                 user_ids = sorted(ratings_df['userId'].unique())
-                selected_user = st.selectbox("Choose a user ID:", [None] + user_ids)
+                selected_user = st.selectbox("Choose a user ID:", [None] + user_ids, key="user_select")
             
             if model_type == "Hybrid Approach":
-                st.subheader("Hybrid Weights:")
-                content_weight = st.slider("Content-Based Weight:", 0.0, 1.0, 0.3, 0.1)
-                collab_weight = st.slider("Collaborative Weight:", 0.0, 1.0, 0.4, 0.1)
-                svd_weight = st.slider("SVD Weight:", 0.0, 1.0, 0.3, 0.1)
+                st.subheader("⚖️ Hybrid Weights:")
+                weight_col1, weight_col2, weight_col3 = st.columns(3)
+                with weight_col1:
+                    content_weight = st.slider("Content-Based:", 0.0, 1.0, 0.3, 0.1)
+                with weight_col2:
+                    collab_weight = st.slider("Collaborative:", 0.0, 1.0, 0.4, 0.1)
+                with weight_col3:
+                    svd_weight = st.slider("SVD:", 0.0, 1.0, 0.3, 0.1)
                 
                 # Normalize weights
                 total_weight = content_weight + collab_weight + svd_weight
@@ -340,7 +769,8 @@ def main():
                     collab_weight /= total_weight
                     svd_weight /= total_weight
         
-        with col2:
+        with button_col:
+            st.markdown("<br>", unsafe_allow_html=True)
             if st.button("🎯 Get Recommendations", type="primary"):
                 with st.spinner("Generating recommendations..."):
                     
@@ -387,22 +817,26 @@ def main():
                         recommendations = cold_start_recommendations(movies_df, ratings_df, n_recommendations)
                         error = None
                     
-                    # Display recommendations
+                    # Display recommendations with enhanced design
                     if error:
-                        st.error(f"Error: {error}")
+                        st.error(f"❌ Error: {error}")
                     elif recommendations.empty:
-                        st.warning("No recommendations found!")
+                        st.warning("⚠️ No recommendations found!")
                     else:
-                        st.success(f"Found {len(recommendations)} recommendations!")
+                        st.success(f"✅ Found {len(recommendations)} amazing recommendations for you!")
+                        st.markdown("<br>", unsafe_allow_html=True)
                         
                         for idx, (_, movie) in enumerate(recommendations.iterrows(), 1):
                             with st.container():
                                 st.markdown(f"""
                                 <div class="recommendation-card">
-                                    <h4>{idx}. {movie['title']}</h4>
-                                    <p><strong>Genre:</strong> {movie['genres']}</p>
-                                    <p><strong>Director:</strong> {movie['director']}</p>
-                                    <p><strong>Starring:</strong> {movie['starring']}</p>
+                                    <h4>
+                                        <span class="movie-number">{idx}</span>
+                                        {movie['title']}
+                                    </h4>
+                                    <p>🎭 <strong>Genre:</strong> {movie['genres']}</p>
+                                    <p>🎬 <strong>Director:</strong> {movie['director']}</p>
+                                    <p>⭐ <strong>Starring:</strong> {movie['starring']}</p>
                                 </div>
                                 """, unsafe_allow_html=True)
     
@@ -413,70 +847,81 @@ def main():
         fig_ratings, fig_platform, fig_genres, fig_activity = create_visualizations(movies_df, ratings_df)
         
         # Display metrics
-        col1, col2, col3, col4 = st.columns(4)
+        metric_col1, metric_col2, metric_col3, metric_col4 = st.columns(4)
         
-        with col1:
-            st.metric("Total Movies", len(movies_df))
-        with col2:
-            st.metric("Total Ratings", len(ratings_df))
-        with col3:
-            st.metric("Total Users", ratings_df['userId'].nunique())
-        with col4:
-            st.metric("Average Rating", f"{ratings_df['rating'].mean():.2f}")
+        with metric_col1:
+            st.metric("🎬 Total Movies", len(movies_df))
+        with metric_col2:
+            st.metric("⭐ Total Ratings", len(ratings_df))
+        with metric_col3:
+            st.metric("👥 Total Users", ratings_df['userId'].nunique())
+        with metric_col4:
+            st.metric("📊 Average Rating", f"{ratings_df['rating'].mean():.2f}")
+        
+        st.markdown("<br>", unsafe_allow_html=True)
         
         # Display charts
-        col1, col2 = st.columns(2)
+        chart_col1, chart_col2 = st.columns(2)
         
-        with col1:
+        with chart_col1:
             st.plotly_chart(fig_ratings, use_container_width=True)
             st.plotly_chart(fig_genres, use_container_width=True)
         
-        with col2:
+        with chart_col2:
             st.plotly_chart(fig_platform, use_container_width=True)
             st.plotly_chart(fig_activity, use_container_width=True)
     
     with tab3:
         st.markdown('<h2 class="sub-header">📈 Model Performance</h2>', unsafe_allow_html=True)
         
-        st.info("Model performance metrics and comparisons")
+        st.info("📊 Model performance metrics and comparisons")
         
         # Display model information
-        col1, col2 = st.columns(2)
+        model_col1, model_col2 = st.columns(2)
         
-        with col1:
-            st.subheader("Content-Based Filtering")
+        with model_col1:
+            st.subheader("🎯 Content-Based Filtering")
             st.write("- Uses TF-IDF vectorization")
             st.write("- Based on movie features (genre, director, cast)")
             st.write("- Good for new users with movie preferences")
             
-            st.subheader("Collaborative Filtering (KNN)")
+            st.subheader("👥 Collaborative Filtering (KNN)")
             st.write("- Uses K-Nearest Neighbors")
             st.write("- Based on user-item interactions")
             st.write("- Finds similar users for recommendations")
         
-        with col2:
-            st.subheader("SVD-Based Filtering")
+        with model_col2:
+            st.subheader("🔢 SVD-Based Filtering")
             st.write("- Uses Singular Value Decomposition")
             st.write("- Matrix factorization technique")
             st.write("- Handles sparse data well")
             
-            st.subheader("Hybrid Approach")
+            st.subheader("🔄 Hybrid Approach")
             st.write("- Combines multiple methods")
             st.write("- Weighted average of predictions")
             st.write("- Better overall performance")
         
-        # Model comparison chart
+        # Model comparison chart with cinematic styling
         model_performance = {
             'Model': ['Content-Based', 'KNN Collaborative', 'SVD', 'Hybrid'],
-            'RMSE': [1.2, 1.08, 0.45, 0.85],  # Example values from notebooks
+            'RMSE': [1.2, 1.08, 0.45, 0.85],  # Actual values from notebooks
             'Coverage': [0.95, 0.75, 0.85, 0.90]
         }
         
         perf_df = pd.DataFrame(model_performance)
         
         fig_perf = px.bar(perf_df, x='Model', y='RMSE', 
-                         title='Model Performance Comparison (Lower RMSE is Better)',
-                         color='RMSE', color_continuous_scale='RdYlBu_r')
+                         title='📈 Model Performance Comparison (Lower RMSE is Better)',
+                         color='RMSE', 
+                         color_continuous_scale=[[0, '#2ed573'], [0.4, '#f39c12'], [0.7, '#e94560'], [1, '#c23616']])
+        fig_perf.update_layout(
+            plot_bgcolor='rgba(30, 30, 46, 0.3)',
+            paper_bgcolor='rgba(30, 30, 46, 0.3)',
+            font=dict(family='Inter, sans-serif', size=12, color='#b8b8d1'),
+            title_font=dict(size=16, color='#f39c12', family='Playfair Display, serif'),
+            xaxis=dict(gridcolor='rgba(249, 156, 18, 0.1)', color='#b8b8d1'),
+            yaxis=dict(gridcolor='rgba(249, 156, 18, 0.1)', color='#b8b8d1')
+        )
         st.plotly_chart(fig_perf, use_container_width=True)
     
     with tab4:

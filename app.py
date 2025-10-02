@@ -14,6 +14,14 @@ from scipy.sparse import csr_matrix
 import warnings
 warnings.filterwarnings("ignore")
 
+# Rich for improved exception logging
+from rich.console import Console
+from rich.traceback import install
+
+# Install rich traceback handler for better error messages
+install(show_locals=True, width=100, extra_lines=3)
+console = Console()
+
 # Set page config
 st.set_page_config(
     page_title="🎬 Movie Recommendation System",
